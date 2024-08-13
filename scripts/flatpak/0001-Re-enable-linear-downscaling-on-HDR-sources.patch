@@ -1,0 +1,39 @@
+From 82fa1af8488c8ffa75343b90091251300e0fc9c6 Mon Sep 17 00:00:00 2001
+From: Johannes Baiter <johannes.baiter@bsb-muenchen.de>
+Date: Mon, 5 Aug 2024 17:22:34 +0200
+Subject: [PATCH] Re-enable linear downscaling on HDR sources
+
+---
+ src/renderer.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/renderer.c b/src/renderer.c
+index 802480d7..05764eed 100644
+--- a/src/renderer.c
++++ b/src/renderer.c
+@@ -1973,10 +1973,10 @@ static bool pass_scale_main(struct pass_state *pass)
+     if (params->disable_linear_scaling || fbofmt->component_depth[0] < 16)
+         use_sigmoid = use_linear = false;
+ 
+-    // Avoid sigmoidization for HDR content because it clips to [0,1], and
+-    // linearization because it causes very nasty ringing artefacts.
+-    if (pl_color_space_is_hdr(&img->color))
+-        use_sigmoid = use_linear = false;
++    // Avoid sigmoidization for HDR content because it clips to [0,1]
++    if (pl_color_space_is_hdr(&img->color)) {
++        use_sigmoid = false;
++    }
+ 
+     if (!(use_linear || use_sigmoid) && img->color.transfer == PL_COLOR_TRC_LINEAR) {
+         img->color.transfer = image->color.transfer;
+@@ -1980,6 +1980,7 @@ static bool pass_scale_main(struct pass_state *pass)
+     }
+
+     if (use_linear || use_sigmoid) {
++        PL_TRACE(rr, "Using linear scaling");
+         pl_shader_linearize(img_sh(pass, img), &img->color);
+         img->color.transfer = PL_COLOR_TRC_LINEAR;
+         pass_hook(pass, img, PL_HOOK_LINEAR);
+--
+2.45.2
+

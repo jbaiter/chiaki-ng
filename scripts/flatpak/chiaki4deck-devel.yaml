@@ -44,6 +44,8 @@ modules:
         commit: c320f61e601caef2be081ce61138e5d51c1be21d
       - type: patch
         path: 0001-Vulkan-Don-t-try-to-reuse-old-swapchain.patch
+      - type: patch
+        path: 0001-Re-enable-linear-downscaling-on-HDR-sources.patch
     modules:
       - name: shaderc
         buildsystem: cmake-ninja
@@ -263,8 +265,8 @@ modules:
     builddir: true
     sources:
       - type: git
-        url: https://github.com/streetpea/chiaki-ng.git
-        branch: main
+        url: https://github.com/jbaiter/chiaki-ng.git
+        branch: hdr-text-fix
     post-install:
       - "install -Dm755 ../scripts/psn-account-id.py /app/bin/psn-account-id"
       - "install -Dm755 ../scripts/vulkan-gamescope-layers/VkLayer_FROG_gamescope_wsi.x86_64.json /app/share/vulkan/implicit_layer.d/VkLayer_FROG_gamescope_wsi.x86_64.json"

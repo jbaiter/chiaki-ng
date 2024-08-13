@@ -350,7 +350,7 @@ void QmlMainWindow::init(Settings *settings)
 
     struct pl_log_params log_params = {
         .log_cb = placebo_log_cb,
-        .log_level = PL_LOG_DEBUG,
+        .log_level = PL_LOG_TRACE,
     };
     placebo_log = pl_log_create(PL_API_VER, &log_params);
 
